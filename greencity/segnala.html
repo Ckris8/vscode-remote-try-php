@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Segnala un problema</title>
+        <link rel="stylesheet" href="../css/style.css">
+    </head>
+    <body>
+        <button class="button" onclick="location.href='mappa.html'" style="margin-left: 3%;">Torna alla Mappa</button>
+
+        <div align="center" style="margin-top: 20px;">
+        <h1>Segnala un problema</h1>
+        <form id="segnalazioneForm">
+            <label for="data">Data:</label>
+            <input type="date" id="data" name="data" required><br><br>
+
+            <label for="ora">Ora:</label>
+            <input type="time" id="ora" name="ora" required><br><br>
+
+            <label for="motivo">Motivo:</label>
+            <select id="motivo" name="motivo" required>
+                <option value="rifiuti">Rifiuti</option>
+                <option value="abbandono">Abbandono</option>
+                <option value="pericolo">Pericolo</option>
+            </select><br><br>
+
+            <label for="foto">Carica una foto:</label>
+            <input type="file" id="foto" name="foto" accept="image/*"><br><br>
+
+            <label for="note">Note:</label><br>
+            <textarea id="note" name="note" rows="4" cols="50" required></textarea><br><br>
+
+            <button type="button" class="button" onclick="geolocalizza()">Geolocalizza</button>
+            <p id="geolocalizzazione"></p>
+
+            <button type="button" class="button" onclick="anteprimaSegnalazione()">Anteprima Segnalazione</button>
+        </form>
+
+        <div id="anteprima" style="display: none; border: 1px solid #ccc; padding: 10px; margin-top: 20px;">
+            <h3>Anteprima Segnalazione</h3>
+            <p><strong>Data:</strong> <span id="anteprimaData"></span></p>
+            <p><strong>Ora:</strong> <span id="anteprimaOra"></span></p>
+            <p><strong>Motivo:</strong> <span id="anteprimaMotivo"></span></p>
+            <p><strong>nota:</strong> <span id="anteprimaNota"></span></p>
+            <p><strong>Latitudine:</strong> <span id="anteprimaLatitudine"></span></p>
+            <p><strong>Longitudine:</strong> <span id="anteprimaLongitudine"></span></p>
+            <p><strong>Foto:</strong> <img id="anteprimaFoto" src="" alt="Foto caricata" style="max-width: 100px; display: none;"></p>
+            <button type="button" class="button" onclick="confermaSegnalazione()">Conferma Segnalazione</button>
+        </div>
+
+        </div>
+        <button class="button" onclick="location.href='index.html'" style="margin-left: 3%;">Torna alla Home</button>
+
+        <script>
+            let segnalazioni = JSON.parse(localStorage.getItem('segnalazioni')) || [];
+            let posizione = { latitudine: null, longitudine: null };
+
+            function geolocalizza() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition((position) => {
+                        posizione.latitudine = position.coords.latitude;
+                        posizione.longitudine = position.coords.longitude;
+                        document.getElementById('geolocalizzazione').textContent = `Latitudine: ${posizione.latitudine}, Longitudine: ${posizione.longitudine}`;
+                    }, () => {
+                        alert('Impossibile ottenere la posizione.');
+                    });
+                } else {
+                    alert('Geolocalizzazione non supportata dal browser.');
+                }
+            }
+
+            function anteprimaSegnalazione() {
+                const data = document.getElementById('data').value;
+                const ora = document.getElementById('ora').value;
+                const categoria = document.getElementById('motivo').value;
+                const note = document.getElementById('note').value; // Corretto da motivo a note
+                const foto = document.getElementById('foto').files[0];
+
+                if (data && ora && categoria && note && posizione.latitudine && posizione.longitudine) {
+                    document.getElementById('anteprimaData').textContent = data;
+                    document.getElementById('anteprimaOra').textContent = ora;
+                    document.getElementById('anteprimaMotivo').textContent = categoria;
+                    document.getElementById('anteprimaNota').textContent = note; // Corretto da anteprimaNote a anteprimaNota
+                    document.getElementById('anteprimaLatitudine').textContent = posizione.latitudine;
+                    document.getElementById('anteprimaLongitudine').textContent = posizione.longitudine;
+
+                    if (foto) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            const anteprimaFoto = document.getElementById('anteprimaFoto');
+                            anteprimaFoto.src = e.target.result;
+                            anteprimaFoto.style.display = 'block';
+                        };
+                        reader.readAsDataURL(foto);
+                    } else {
+                        document.getElementById('anteprimaFoto').style.display = 'none';
+                    }
+
+                    document.getElementById('anteprima').style.display = 'block';
+                } else {
+                    alert('Compila tutti i campi e geolocalizzati prima di procedere.');
+                }
+            }
+
+            function confermaSegnalazione() {
+                const data = document.getElementById('data').value;
+                const ora = document.getElementById('ora').value;
+                const motivo = document.getElementById('motivo').value;
+                const note = document.getElementById('note').value;
+
+                if (!posizione.latitudine || !posizione.longitudine) {
+                    alert('Devi geolocalizzarti prima di confermare la segnalazione.');
+                    return;
+                }
+
+                const nuovaSegnalazione = {
+                    data,
+                    ora,
+                    motivo,
+                    latitudine: posizione.latitudine,
+                    longitudine: posizione.longitudine,
+                    note
+                };
+
+                segnalazioni.push(nuovaSegnalazione);
+                localStorage.setItem('segnalazioni', JSON.stringify(segnalazioni));
+
+                // Verifica che i dati siano salvati
+                console.log('Segnalazione salvata:', nuovaSegnalazione);
+
+                alert('Segnalazione confermata e salvata con successo!');
+                location.href = 'mappa.html';
+            }
+        </script>
+    </body>
+</html>

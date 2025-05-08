@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>mappa</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <link rel="stylesheet" href="../css/style.css">
+        <script src="../js/main.js"></script>
+    </head>
+    <body>
+        <div id="map" style="height: 500px;"></div>
+
+        <div class="dropdown">
+            <button class="dropdown-button">
+                <img src="../assets/icons/menu-icon.png" alt="Menu" class="menu-icon">
+            </button>
+            <div class="dropdown-menu">
+                <a href="index.html">Home</a>
+                <a href="profilo.html">Profilo</a>
+                <a href="mappa.html">Mappa</a>
+            </div>
+        </div>
+
+        <div align="center" style="margin-top: 20px;">
+            <h3>Filtra Segnalazioni</h3>
+            <form id="filtroForm">
+                <label for="categoriaFiltro">Categoria:</label>
+                <select id="categoriaFiltro" name="categoriaFiltro">
+                    <option value="tutte">Tutte</option>
+                    <option value="rifiuti">Rifiuti</option>
+                    <option value="abbandono">Abbandono</option>
+                    <option value="pericolo">Pericolo</option>
+                </select>
+
+                <label for="dataFiltro">Data da:</label>
+                <input type="date" id="dataFiltro" name="dataFiltro">
+
+                <button type="button" class="button" onclick="applicaFiltri()">Applica Filtri</button>
+            </form>
+        </div>
+
+        <div align="center" style="margin-top: 20px;">
+            <h3>Cerca un Indirizzo</h3>
+            <input type="text" id="searchInput" placeholder="Inserisci un indirizzo" style="width: 300px; padding: 5px;">
+            <button class="button" onclick="cercaIndirizzo()">Cerca</button>
+        </div>
+
+        <div align="center" style="margin-top: 20px;">
+            <h3>Inserisci Coordinate</h3>
+            <label for="latInput">Latitudine:</label>
+            <input type="text" id="latInput" placeholder="Es. 37.5921295" style="width: 150px; padding: 5px;">
+            <label for="lngInput">Longitudine:</label>
+            <input type="text" id="lngInput" placeholder="Es. 14.9742222" style="width: 150px; padding: 5px;">
+            <button class="button" onclick="cercaCoordinate()">Cerca</button>
+        </div>
+
+        <div align="center" style="margin-top: 20px;">
+            <button class="button" onclick="location.href='index.html'">Torna alla Home</button>
+            <button class="button" onclick="location.href='segnala.html'">Nuova Segnalazione</button>    
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div>
+                <img src="../assets/icons/facebook_icon.png" alt="" height="20px" width="20px"><a href="https://www.facebook.com" target="_blank">Facebook</a> 
+                <br><img src="../assets/icons/ista_icon.png" alt="" height="20px" width="20px"><a href="https://www.instagram.com" target="_blank">Instagram</a>
+            </div>
+            <div id="orarioLocale"></div>
+        </footer>
+
+        <script src="../js/mappa.js"></script>
+        <script>
+            function applicaFiltri() {
+                const categoriaFiltro = document.getElementById('categoriaFiltro').value;
+                const dataFiltro = document.getElementById('dataFiltro').value;
+
+                // Recupera le segnalazioni da localStorage
+                let segnalazioni = JSON.parse(localStorage.getItem('segnalazioni')) || [];
+
+                // Filtra le segnalazioni in base alla categoria e alla data
+                const segnalazioniFiltrate = segnalazioni.filter(segnalazione => {
+                    const categoriaMatch = categoriaFiltro === 'tutte' || segnalazione.categoria === categoriaFiltro;
+                    const dataMatch = !dataFiltro || new Date(segnalazione.data) >= new Date(dataFiltro);
+                    return categoriaMatch && dataMatch;
+                });
+
+                // Rimuovi i marker esistenti
+                segnalazioniLayer.clearLayers();
+
+                // Aggiungi i marker filtrati alla mappa
+                segnalazioniFiltrate.forEach(segnalazione => {
+                    L.marker([segnalazione.latitudine, segnalazione.longitudine]).addTo(segnalazioniLayer)
+                        .bindPopup(`<strong>Motivo:</strong> ${segnalazione.motivo}<br><strong>Data:</strong> ${segnalazione.data}<br><strong>Ora:</strong> ${segnalazione.ora}<br><strong>Categoria:</strong> ${segnalazione.categoria}`);
+                });
+            }
+
+            
+        </script>
+    </body>
+</html>

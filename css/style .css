@@ -1,0 +1,225 @@
+/* Generale */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4fdf4; /* Verde chiaro per il background */
+    color: #333; /* Testo scuro per leggibilità */
+}
+
+/* Header */
+header, footer {
+    background-color: #4CAF50; /* Verde sostenibilità */
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 3px solid #388E3C; /* Verde più scuro per contrasto */
+    border-top:3px solid #388E3C;
+    position: relative; /* Per posizionare elementi assoluti all'interno */
+}
+
+header, footer h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+/* Titoli */
+h1, h3 {
+    color: #2E7D32; /* Verde scuro per i titoli */
+    margin-left: 7px;
+}
+
+/* Paragrafi */
+p {
+    font-family: 'Verdana', sans-serif; /* Cambiato il font in Verdana */
+    color: #2E7D32; /* Cambiato il colore in verde scuro */
+    line-height: 1.6;
+    margin: 10px 20px;
+}
+
+/* Liste */
+ul {
+    margin: 10px 20px;
+    padding: 0;
+    list-style-type: disc;
+}
+
+ul li {
+    margin: 5px 0;
+}
+
+/* Infografica */
+.infographic {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px;
+    padding: 20px;
+    background-color: #e8f5e9; /* Verde chiaro */
+    border: 1px solid #c8e6c9; /* Bordo verde tenue */
+    border-radius: 10px;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat h2 {
+    color: #4CAF50; /* Verde brillante */
+    font-size: 2em;
+    margin: 0;
+}
+
+.stat p {
+    color: #555; /* Grigio scuro per il testo */
+    font-size: 1em;
+}
+
+/* Sezione Link */
+section ul li a {
+    color: #4CAF50; /* Verde per i link */
+    text-decoration: none;
+}
+
+section ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    background-color: #388E3C; /* Verde scuro */
+    color: white;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+#map {
+    height: 80vh; /* La mappa occupa l'80% dell'altezza della finestra */
+    width: 100%; /* La mappa occupa tutta la larghezza */
+}
+
+/* Stile generale per tutti i pulsanti */
+.button {
+    padding: 10px 20px;
+    margin: 10px auto; /* Centra il pulsante orizzontalmente */
+    background-color: #4CAF50; /* Verde sostenibilità */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    text-align: center;
+    display: inline-block;
+}
+
+.button:hover {
+    background-color: #45a049; /* Verde più scuro al passaggio del mouse */
+}
+
+
+.profile-icon {
+    width: 50px; /* Dimensione dell'immagine */
+    height: 50px;
+    border-radius: 70%; /* Per rendere l'immagine circolare */
+    cursor: pointer;
+}
+
+/* Profilo Utente */
+.profile-button{
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    cursor: pointer;
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 7px;
+}
+
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    padding: 20px;
+    background-color: #e8f5e9; /* Verde chiaro */
+    border: 1px solid #c8e6c9; /* Bordo verde tenue */
+    border-radius: 10px;
+}
+
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #c8e6c9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.profile-picture {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 15px;
+    border: 2px solid #4CAF50; /* Verde brillante */
+}
+
+.profile-info h2 {
+    color: #2E7D32; /* Verde scuro */
+    font-size: 1.5em;
+    margin: 10px 0;
+}
+
+.profile-info p {
+    color: #555; /* Grigio scuro */
+    font-size: 1em;
+    margin: 5px 0;
+}
+
+    /* Stile per il pulsante immagine */
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+    }
+
+    .menu-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Stile per il menu a tendina */
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        min-width: 150px;
+        border-radius: 5px;
+    }
+
+    .dropdown-menu a {
+        color: black;
+        padding: 10px 15px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .dropdown-menu a:hover {
+        background-color: #ddd;
+    }
+
+    /* Mostra il menu quando attivo */
+    .dropdown:hover .dropdown-menu {
+        display: block;
+    }
