@@ -1,0 +1,93 @@
+/* Sfondo e font */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4fdf4;
+    color: #2E7D32;
+    margin: 0;
+    padding: 0;
+}
+
+/* Contenitore centrale */
+div {
+    max-width: 400px;
+    margin: 40px auto 0 auto;
+    padding: 30px 25px 20px 25px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(44, 167, 80, 0.10), 0 1.5px 4px rgba(76,175,80,0.08);
+}
+
+/* Titoli */
+h1 {
+    color: #388E3C;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Input */
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+    width: 95%;
+    padding: 10px;
+    margin: 8px 0 16px 0;
+    border: 1px solid #c8e6c9;
+    border-radius: 5px;
+    background: #e8f5e9;
+    font-size: 1em;
+    color: #2E7D32;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+    border-color: #4CAF50;
+    outline: none;
+    background: #f1fff1;
+}
+
+/* Pulsanti */
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background-color: #388E3C;
+}
+
+/* Link torna indietro */
+a {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #4CAF50;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+    div {
+        max-width: 95vw;
+        padding: 15px 5vw;
+    }
+    h1 {
+        font-size: 1.2em;
+    }
+}

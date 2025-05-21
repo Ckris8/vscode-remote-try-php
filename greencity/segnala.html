@@ -49,7 +49,7 @@
         </div>
 
         </div>
-        <button class="button" onclick="location.href='index.html'" style="margin-left: 3%;">Torna alla Home</button>
+        <button class="button" onclick="location.href='index.php'" style="margin-left: 3%;">Torna alla Home</button>
 
         <script>
             let segnalazioni = JSON.parse(localStorage.getItem('segnalazioni')) || [];
@@ -107,29 +107,40 @@
                 const ora = document.getElementById('ora').value;
                 const motivo = document.getElementById('motivo').value;
                 const note = document.getElementById('note').value;
+                const foto = document.getElementById('foto').files[0];
 
                 if (!posizione.latitudine || !posizione.longitudine) {
                     alert('Devi geolocalizzarti prima di confermare la segnalazione.');
                     return;
                 }
 
-                const nuovaSegnalazione = {
-                    data,
-                    ora,
-                    motivo,
-                    latitudine: posizione.latitudine,
-                    longitudine: posizione.longitudine,
-                    note
-                };
+                const formData = new FormData();
+                formData.append('data', data);
+                formData.append('ora', ora);
+                formData.append('motivo', motivo);
+                formData.append('note', note);
+                formData.append('latitudine', posizione.latitudine);
+                formData.append('longitudine', posizione.longitudine);
+                if (foto) {
+                    formData.append('foto', foto);
+                }
 
-                segnalazioni.push(nuovaSegnalazione);
-                localStorage.setItem('segnalazioni', JSON.stringify(segnalazioni));
-
-                // Verifica che i dati siano salvati
-                console.log('Segnalazione salvata:', nuovaSegnalazione);
-
-                alert('Segnalazione confermata e salvata con successo!');
-                location.href = 'mappa.html';
+                fetch('salva_segnalazione.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        alert('Segnalazione confermata e salvata con successo!');
+                        location.href = 'mappa.html';
+                    } else {
+                        alert('Errore nel salvataggio: ' + (result.error || ''));
+                    }
+                })
+                .catch(error => {
+                    alert('Errore di rete: ' + error);
+                });
             }
         </script>
     </body>

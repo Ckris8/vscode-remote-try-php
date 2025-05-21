@@ -16,15 +16,15 @@
                 <img src="../assets/icons/menu-icon.png" alt="Menu" class="menu-icon">
             </button>
             <div class="dropdown-menu">
-                <a href="index.html">Home</a>
-                <a href="profilo.html">Profilo</a>
+                <a href="index.php">Home</a>
+                <a href="profilo.php">Profilo</a>
                 <a href="mappa.html">Mappa</a>
             </div>
         </div>
 
         <div align="center" style="margin-top: 20px;">
             <h3>Filtra Segnalazioni</h3>
-            <form id="filtroForm">
+            <form id="filtroForm" onsubmit="applicaFiltri(event)">
                 <label for="categoriaFiltro">Categoria:</label>
                 <select id="categoriaFiltro" name="categoriaFiltro">
                     <option value="tutte">Tutte</option>
@@ -36,7 +36,7 @@
                 <label for="dataFiltro">Data da:</label>
                 <input type="date" id="dataFiltro" name="dataFiltro">
 
-                <button type="button" class="button" onclick="applicaFiltri()">Applica Filtri</button>
+                <button type="submit" class="button">Applica Filtri</button>
             </form>
         </div>
 
@@ -50,13 +50,13 @@
             <h3>Inserisci Coordinate</h3>
             <label for="latInput">Latitudine:</label>
             <input type="text" id="latInput" placeholder="Es. 37.5921295" style="width: 150px; padding: 5px;">
-            <label for="lngInput">Longitudine:</label>
+            <label for="lngInput">Longitudine:</label> 
             <input type="text" id="lngInput" placeholder="Es. 14.9742222" style="width: 150px; padding: 5px;">
             <button class="button" onclick="cercaCoordinate()">Cerca</button>
         </div>
 
         <div align="center" style="margin-top: 20px;">
-            <button class="button" onclick="location.href='index.html'">Torna alla Home</button>
+            <button class="button" onclick="location.href='index.php'">Torna alla Home</button>
             <button class="button" onclick="location.href='segnala.html'">Nuova Segnalazione</button>    
         </div>
 
@@ -71,28 +71,32 @@
 
         <script src="../js/mappa.js"></script>
         <script>
-            function applicaFiltri() {
-                const categoriaFiltro = document.getElementById('categoriaFiltro').value;
-                const dataFiltro = document.getElementById('dataFiltro').value;
+            function applicaFiltri(event) {
+                if(event) event.preventDefault();
 
-                // Recupera le segnalazioni da localStorage
-                let segnalazioni = JSON.parse(localStorage.getItem('segnalazioni')) || [];
+                const motivo = document.getElementById('categoriaFiltro').value;
+                const dataDa = document.getElementById('dataFiltro').value;
 
-                // Filtra le segnalazioni in base alla categoria e alla data
-                const segnalazioniFiltrate = segnalazioni.filter(segnalazione => {
-                    const categoriaMatch = categoriaFiltro === 'tutte' || segnalazione.categoria === categoriaFiltro;
-                    const dataMatch = !dataFiltro || new Date(segnalazione.data) >= new Date(dataFiltro);
-                    return categoriaMatch && dataMatch;
-                });
-
-                // Rimuovi i marker esistenti
-                segnalazioniLayer.clearLayers();
-
-                // Aggiungi i marker filtrati alla mappa
-                segnalazioniFiltrate.forEach(segnalazione => {
-                    L.marker([segnalazione.latitudine, segnalazione.longitudine]).addTo(segnalazioniLayer)
-                        .bindPopup(`<strong>Motivo:</strong> ${segnalazione.motivo}<br><strong>Data:</strong> ${segnalazione.data}<br><strong>Ora:</strong> ${segnalazione.ora}<br><strong>Categoria:</strong> ${segnalazione.categoria}`);
-                });
+                fetch(`filtra_segnalazioni.php?motivo=${encodeURIComponent(motivo)}&dataDa=${encodeURIComponent(dataDa)}`)
+                    .then(response => response.json())
+                    .then(segnalazioni => {
+                        segnalazioniLayer.clearLayers();
+                        segnalazioni.forEach(segnalazione => {
+                            if (segnalazione.latitudine && segnalazione.longitudine) {
+                                L.marker([segnalazione.latitudine, segnalazione.longitudine]).addTo(segnalazioniLayer)
+                                    .bindPopup(
+                                        `<strong>Motivo:</strong> ${segnalazione.motivo}<br>
+                                         <strong>Data:</strong> ${segnalazione.data}<br>
+                                         <strong>Ora:</strong> ${segnalazione.ora}<br>
+                                         <strong>Note:</strong> ${segnalazione.note || 'Nessuna nota'}`
+                                    );
+                            }
+                        });
+                    })
+                    .catch(error => {
+                        alert('Errore durante il filtraggio delle segnalazioni');
+                        console.error(error);
+                    });
             }
 
             

@@ -3,20 +3,20 @@ session_start();
 require_once('../db/database.php');
 
 if (isset($_SESSION['session_id'])) {
-    header('Location: dashboard.php');
+    header('Location: ../greencity/index.php');
     exit;
 }
 
 if (isset($_POST['login'])) {
-    $username = $_POST['email'] ?? '';
+    $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
     
-    if (empty($email) || empty($password)) {
+    if (empty($username) || empty($password)) {
         $msg = 'Inserisci username e password %s';
     } else {
         $query = "
-            SELECT username, password, livello
-            FROM Socio
+            SELECT username, password
+            FROM users
             WHERE username = :username
         ";
         
@@ -32,9 +32,8 @@ if (isset($_POST['login'])) {
             session_regenerate_id();
             $_SESSION['session_id'] = session_id();
             $_SESSION['session_user'] = $user['username'];
-            $_SESSION['livello'] = $user['livello'];
             
-            header('Location: dashboard.php');
+            header('Location: ../greencity/index.php');
             exit;
         }
     }

@@ -1,3 +1,31 @@
+<?php
+session_start();
+
+
+
+if (!isset($_SESSION['session_user'])) {
+    header("Location: ../auth/login.html");
+    exit();
+}
+
+try {
+    require_once("../db/database.php");
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    $stmt = $pdo->prepare("SELECT nome, cognome, numero, email FROM users WHERE username = ?");
+    $stmt->execute([$_SESSION['session_user']]);
+    $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if (!$userData) {
+        // Utente non trovato, esci
+        session_destroy();
+        header("Location: ../auth/login.html");
+        exit();
+    }
+} catch (PDOException $e) {
+    die("Errore connessione database: " . $e->getMessage());
+}
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,23 +40,23 @@
         </header>
 
         <div class="dropdown">
-                    <button class="dropdown-button">
-                        <img src="../assets/icons/menu-icon.png" alt="Menu" class="menu-icon">
-                    </button>
-                    <div class="dropdown-menu">
-                        <a href="index.html">Home</a>
-                        <a href="profilo.html">Profilo</a>
-                        <a href="mappa.html">Mappa</a>
-                    </div>
-                </div>
+            <button class="dropdown-button">
+                <img src="../assets/icons/menu-icon.png" alt="Menu" class="menu-icon">
+            </button>
+            <div class="dropdown-menu">
+                <a href="index.php">Home</a>
+                <a href="profilo.php">Profilo</a>
+                <a href="mappa.html">Mappa</a>
+            </div>
+        </div>
 
         <section class="profile-container">
             <div class="profile-card">
                 <img src="../assets/icons/iconProfilo.png" alt="Immagine Profilo" class="profile-picture">
                 <div class="profile-info">
-                    <h2>Nome Cognome</h2>
-                    <p><strong>Numero:</strong> +39 123 456 7890</p>
-                    <p><strong>Email:</strong> nome.cognome@example.com</p>
+                    <h2><?php echo htmlspecialchars($userData['nome'] . ' ' . $userData['cognome']); ?></h2>
+                    <p><strong>Numero:</strong> <?php echo htmlspecialchars($userData['numero']); ?></p>
+                    <p><strong>Email:</strong> <?php echo htmlspecialchars($userData['email']); ?></p>
                 </div>
             </div>
         </section>
@@ -85,7 +113,12 @@
             </div>
         </section>
 
-        <button class="button" onclick="location.href='index.html'">Torna alla Home</button>
+        <button class="button" onclick="location.href='index.php'">Torna alla Home</button>
+
+        <!-- Pulsante Logout -->
+        <form method="post" action="../auth/logout.php" style="margin-top:20px; text-align:center;">
+            <button type="submit" class="button" style="background-color: #d32f2f; color: white;">Logout</button>
+        </form>
 
         <!-- Footer -->
         <footer>

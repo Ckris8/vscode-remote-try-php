@@ -1,3 +1,19 @@
+<?php
+session_start();
+$isLogged = isset($_SESSION['username']);
+
+// Connessione al database
+require_once("../db/database.php");
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+// Preleva le ultime 3 segnalazioni con latitudine e longitudine
+$stmt = $pdo->query("SELECT data, ora, motivo, note, latitudine, longitudine FROM segnalazioni ORDER BY id DESC LIMIT 3");
+$ultimeSegnalazioni = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Conta il totale delle segnalazioni
+$stmtCount = $pdo->query("SELECT COUNT(*) as totale FROM segnalazioni");
+$totaleSegnalazioni = $stmtCount->fetch(PDO::FETCH_ASSOC)['totale'];
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -16,13 +32,13 @@
                 <img src="../assets/icons/menu-icon.png" alt="Menu" class="menu-icon">
             </button>
             <div class="dropdown-menu">
-                <a href="index.html">Home</a>
-                <a href="profilo.html">Profilo</a>
+                <a href="index.php">Home</a>
+                <a href="profilo.php">Profilo</a>
                 <a href="mappa.html">Mappa</a>
             </div>
         </div>
 
-        <a href="profilo.html" class="profile-button">
+        <a href="profilo.php" class="profile-button">
             <img src="../assets/icons/iconProfilo.png" alt="Profilo" class="profile-icon">
         </a>
 
@@ -67,37 +83,29 @@
             <table border="1" style="width: 100%; text-align: left;">
                 <thead>
                     <tr>
-                        <th>Luogo</th>
                         <th>Data</th>
+                        <th>Ora</th>
                         <th>Motivo</th>
+                        <th>Note</th>
+                        <th>Latitudine</th>
+                        <th>Longitudine</th>
                     </tr>
                 </thead>
-                <tbody id="tabellaSegnalazioni">
-                    <!-- Le segnalazioni verranno aggiunte dinamicamente qui -->
+                <tbody>
+                    <?php foreach ($ultimeSegnalazioni as $segnalazione): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($segnalazione['data']); ?></td>
+                            <td><?php echo htmlspecialchars($segnalazione['ora']); ?></td>
+                            <td><?php echo htmlspecialchars($segnalazione['motivo']); ?></td>
+                            <td><?php echo htmlspecialchars($segnalazione['note']); ?></td>
+                            <td><?php echo htmlspecialchars($segnalazione['latitudine']); ?></td>
+                            <td><?php echo htmlspecialchars($segnalazione['longitudine']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
-            <p id="totaleSegnalazioni"></p>
+            <p><strong>Numero totale di segnalazioni:</strong> <?php echo $totaleSegnalazioni; ?></p>
         </section>
-
-        <script>
-            // Recupera le segnalazioni da localStorage
-            let segnalazioni = JSON.parse(localStorage.getItem('segnalazioni')) || [];
-
-            // Mostra le ultime 3 segnalazioni
-            const tabellaSegnalazioni = document.getElementById('tabellaSegnalazioni');
-            segnalazioni.slice(-3).reverse().forEach(segnalazione => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>Lat: ${segnalazione.latitudine}, Lon: ${segnalazione.longitudine}</td>
-                    <td>${segnalazione.data}</td>
-                    <td>${segnalazione.motivo}</td> <!-- Aggiunto il motivo -->
-                `;
-                tabellaSegnalazioni.appendChild(row);
-            });
-
-            // Mostra il numero totale di segnalazioni
-            document.getElementById('totaleSegnalazioni').textContent = `Numero totale di segnalazioni: ${segnalazioni.length}`;
-        </script>
 
         <section>
             <h3>Link Utili per la Sostenibilità</h3>
