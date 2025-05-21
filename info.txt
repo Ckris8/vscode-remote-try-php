@@ -1,0 +1,6 @@
+implementazione database greencity:
+-sistema account con registrazione con dati, login e sessione
+-profilo:dati del profilo con segnalazioni dell'utente recuperati da database
+-home: ultime segnalazioni e totale segnalazione recuperate da database
+-mappa: filtri marker tramite database e inserimento segnalazione con mappa sul database
+-segnalazioni: inserimento segnalazione database
